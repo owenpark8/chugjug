@@ -9,15 +9,15 @@ set(MX_Defines_Syms
 )
 
 IF(NOT DEFINED MX_SRC_DIR)
-    MESSAGE(FATAL_ERROR "ERROR: Cube MX Source Directory Must Be Defined")
+    MESSAGE(FATAL_ERROR "ERROR: MX_SRC_DIR Must Be Defined")
 ENDIF()
 
 IF(NOT DEFINED MX_INC_DIR)
-    MESSAGE(FATAL_ERROR "ERROR: Cube MX Source Directory Must Be Defined")
+    MESSAGE(FATAL_ERROR "ERROR: MX_INC_DIR Must Be Defined")
 ENDIF()
 
 IF(NOT DEFINED MX_STARTUP_S)
-    MESSAGE(FATAL_ERROR "ERROR: Cube MX Source Directory Must Be Defined")
+    MESSAGE(FATAL_ERROR "ERROR: MX_STARTUP_S Must Be Defined")
 ENDIF()
 
 
@@ -30,13 +30,15 @@ set(MX_Include_Dirs
     ${CMAKE_CURRENT_SOURCE_DIR}/STM32CubeU5/Drivers/CMSIS/Include
 )
 
+# Get all .c files in the MX_SRC_DIR except the system_stm32u5xx.c
+file(GLOB_RECURSE MX_SRC_FILES CONFIGURE_DEPENDS
+    "${MX_SRC_DIR}/*.c"
+)
+list(FILTER MX_SRC_FILES EXCLUDE REGEX "system_stm32u5xx\\.c$")
+
 # STM32CubeMX generated application sources
 set(MX_Application_Src
-    ${MX_SRC_DIR}/main.c
-    ${MX_SRC_DIR}/stm32u5xx_it.c
-    ${MX_SRC_DIR}/stm32u5xx_hal_msp.c
-    ${MX_SRC_DIR}/sysmem.c
-    ${MX_SRC_DIR}/syscalls.c
+    ${MX_SRC_FILES}
     ${MX_STARTUP_S}
 )
 
@@ -50,7 +52,7 @@ set(STM32_Drivers_Src
     ${DRIVER_SOURCES}
 )
 
-# Drivers Midllewares
+# Drivers Middlewares
 
 
 
@@ -89,6 +91,6 @@ set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES ADDITIONAL_CLEAN_FILES ${
 
 # Validate that STM32CubeMX code is compatible with C standard
 if((CMAKE_C_STANDARD EQUAL 90) OR (CMAKE_C_STANDARD EQUAL 99))
-    message(ERROR "Generated code requires C11 or higher")
+    message(SEND_ERROR "Generated code requires C11 or higher")
 endif()
 

@@ -39,7 +39,10 @@ enable_language(C ASM)
 add_executable(${CMAKE_PROJECT_NAME})
 
 # Add STM32CubeMX
-add_subdirectory(extern/stm32u5)
+add_subdirectory(../extern/stm32u5 stm32cubemx)
+
+# Add shared library
+add_subdirectory(../lib lib)
 
 # Link directories setup
 target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
@@ -67,6 +70,5 @@ list(REMOVE_ITEM CMAKE_C_IMPLICIT_LINK_LIBRARIES ob)
 # Add linked libraries
 target_link_libraries(${CMAKE_PROJECT_NAME}
     stm32cubemx
-
-    # Add user defined libraries
+    chugjug_lib
 )
