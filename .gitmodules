@@ -1,0 +1,3 @@
+[submodule "fw/extern/STM32CubeU5"]
+	path = fw/extern/stm32u5/STM32CubeU5
+	url = https://github.com/STMicroelectronics/STM32CubeU5.git
