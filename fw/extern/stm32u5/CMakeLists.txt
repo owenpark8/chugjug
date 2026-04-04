@@ -33,6 +33,7 @@ set(MX_Include_Dirs
 # Get all .c files in the MX_SRC_DIR except the system_stm32u5xx.c
 file(GLOB_RECURSE MX_SRC_FILES CONFIGURE_DEPENDS
     "${MX_SRC_DIR}/*.c"
+    "${MX_SRC_DIR}/*.cpp"
 )
 list(FILTER MX_SRC_FILES EXCLUDE REGEX "system_stm32u5xx\\.c$")
 

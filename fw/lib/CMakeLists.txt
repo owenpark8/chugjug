@@ -1,7 +1,7 @@
 add_library(chugjug_lib STATIC)
 
 target_sources(chugjug_lib PRIVATE
-    src/lis3dh.c
+    src/lis3dh.cpp
 )
 
 target_include_directories(chugjug_lib PUBLIC

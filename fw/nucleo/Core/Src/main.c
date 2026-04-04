@@ -109,11 +109,13 @@ int main(void)
   MX_SAI1_Init();
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
+  chugjug_init();
 
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  chugjug_loop();
   while (1)
   {
     /* USER CODE END WHILE */
