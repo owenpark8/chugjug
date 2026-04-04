@@ -1,0 +1,12 @@
+# stm32 auto generated
+**/main.h
+**/stm32*_hal_conf.h
+**/stm32*_it.h
+**/stm32*_hal_msp.c
+**/stm32*_it.c
+**/syscalls.c
+**/sysmem.c
+**/system_stm32*.c
+
+extern/stm32u5/**/*
+**/*build*/**/*
