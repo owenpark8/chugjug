@@ -4,9 +4,17 @@ namespace lis3dh {
 
     static constexpr uint8_t LIS3DH_REG_WHO_AM_I = 0x0F;
     static constexpr uint8_t LIS3DH_REG_CTRL_REG1 = 0x20;
+    static constexpr uint8_t LIS3DH_REG_CTRL_REG2 = 0x21;
+    static constexpr uint8_t LIS3DH_REG_CTRL_REG3 = 0x22;
+    static constexpr uint8_t LIS3DH_REG_CTRL_REG4 = 0x23;
+    static constexpr uint8_t LIS3DH_REG_CTRL_REG5 = 0x24;
+    static constexpr uint8_t LIS3DH_REG_CTRL_REG6 = 0x25;
     static constexpr uint8_t LIS3DH_REG_OUT_X_L = 0x28;
     static constexpr uint8_t LIS3DH_INT1_CFG = 0x30;
+    static constexpr uint8_t LIS3DH_INT1_THS = 0x32;
     static constexpr uint8_t LIS3DH_INT2_CFG = 0x34;
+    static constexpr uint8_t LIS3DH_INT2_THS = 0x36;
+    static constexpr uint8_t LIS3DH_INT2_DURATION = 0x37;
 
     static int I2C_TIMEOUT_MS = 100;
 
@@ -91,30 +99,8 @@ namespace lis3dh {
     int write_ctrl_reg1(I2C_HandleTypeDef* hi2c, uint8_t ctrl_reg1) {
         return write_register(hi2c, LIS3DH_REG_CTRL_REG1, ctrl_reg1);
     }
-    uint8_t ctrl_reg1_odr(int data_rate_hz) {
-        switch (data_rate_hz) {
-            case 1:
-                return 0x10; // 1Hz
-            case 10:
-                return 0x20; // 10Hz
-            case 25:
-                return 0x30; // 25Hz
-            case 50:
-                return 0x40; // 50Hz
-            case 100:
-                return 0x50; // 100Hz
-            case 200:
-                return 0x60; // 200Hz
-            case 400:
-                return 0x70; // 400Hz
-            case 1600:
-                return 0x80; // 1600Hz
-            case 1344:       // 1344Hz (low power mode)
-            case 5476:       // 5.376kHz (high-resolution/normal mode)
-                return 0x90;
-            default:
-                return 0x00; // power-down mode
-        }
+    uint8_t ctrl_reg1_odr(DataRate data_rate) {
+        return static_cast<uint8_t>(data_rate);
     }
     uint8_t ctrl_reg1_low_power_mode(bool enabled) {
         return enabled ? (1 << 3) : 0;
@@ -127,6 +113,15 @@ namespace lis3dh {
     }
     uint8_t ctrl_reg1_x_axis(bool enabled) {
         return enabled ? (1 << 0) : 0;
+    }
+
+
+    //   // CTRL_REG6
+    int write_ctrl_reg6(I2C_HandleTypeDef* hi2c, uint8_t ctrl_reg6) {
+        return write_register(hi2c, LIS3DH_REG_CTRL_REG6, ctrl_reg6);
+    }
+    uint8_t ctrl_reg6_i2_ia2(bool enabled) {
+        return enabled ? (1 << 5) : 0;
     }
 
     // INT1_CFG
@@ -156,6 +151,34 @@ namespace lis3dh {
     }
     uint8_t int1_cfg_xlie(bool enabled) {
         return enabled ? (1 << 0) : 0;
+    }
+
+    // INT1_THS
+    int write_int1_ths(I2C_HandleTypeDef* hi2c, uint8_t int1_ths) {
+        return write_register(hi2c, LIS3DH_INT1_THS, int1_ths);
+    }
+    uint8_t int1_ths_threshold_mg(int threshold_mg, FullScale fs) {
+        int mg_per_lsb;
+        switch (fs) {
+            case FullScale::FS_2G:
+                mg_per_lsb = 16;
+                break;
+            case FullScale::FS_4G:
+                mg_per_lsb = 32;
+                break;
+            case FullScale::FS_8G:
+                mg_per_lsb = 62;
+                break;
+            case FullScale::FS_16G:
+                mg_per_lsb = 186;
+                break;
+            default:
+                mg_per_lsb = 16;
+        }
+        int threshold_lsb = threshold_mg / mg_per_lsb;
+        if (threshold_lsb < 0) threshold_lsb = 0;
+        if (threshold_lsb > 127) threshold_lsb = 127; // 7-bit value
+        return (uint8_t) threshold_lsb;
     }
 
     // INT2_CFG
@@ -189,30 +212,21 @@ namespace lis3dh {
 
     // INT2_THS
     int write_int2_ths(I2C_HandleTypeDef* hi2c, uint8_t int2_ths) {
-        return write_register(hi2c, 0x36, int2_ths);
+        return write_register(hi2c, LIS3DH_INT2_THS, int2_ths);
     }
     uint8_t int2_ths_threshold_mg(int threshold_mg, FullScale fs) {
-        int mg_per_lsb;
-        switch (fs) {
-            case FullScale::FS_2G:
-                mg_per_lsb = 16;
-                break;
-            case FullScale::FS_4G:
-                mg_per_lsb = 32;
-                break;
-            case FullScale::FS_8G:
-                mg_per_lsb = 62;
-                break;
-            case FullScale::FS_16G:
-                mg_per_lsb = 186;
-                break;
-            default:
-                mg_per_lsb = 16;
-        }
-        int threshold_lsb = threshold_mg / mg_per_lsb;
-        if (threshold_lsb < 0) threshold_lsb = 0;
-        if (threshold_lsb > 127) threshold_lsb = 127; // 7-bit value
-        return (uint8_t) threshold_lsb;
+        return int1_ths_threshold_mg(threshold_mg, fs);
     }
+
+    // INT2_DURATION
+    int write_int2_duration(I2C_HandleTypeDef* hi2c, uint8_t int2_duration) {
+        return write_register(hi2c, LIS3DH_INT2_DURATION, int2_duration);
+    }
+    uint8_t int2_duration_num_samples(int num_samples) {
+        if (num_samples < 0) num_samples = 0;
+        if (num_samples > 127) num_samples = 127; // 7-bit value
+        return (uint8_t) num_samples;
+    }
+
 
 } // namespace lis3dh
