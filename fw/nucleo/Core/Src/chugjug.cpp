@@ -12,13 +12,26 @@ extern TIM_HandleTypeDef htim1;
 void init();
 void loop();
 void error_handler();
+void read_accel_callback();
+void handle_int2_interrupt();
+void enter_standby_mode();
 
 void init() {
+    HAL_GPIO_TogglePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin);
+
+    // ===== STANDBY MODE =====
+    if (__HAL_PWR_GET_FLAG(PWR_FLAG_SBF) != RESET) {
+        __HAL_PWR_CLEAR_FLAG(PWR_FLAG_SBF);
+        if (__HAL_PWR_GET_FLAG(PWR_WAKEUP_FLAG1) != RESET) {
+            __HAL_PWR_CLEAR_FLAG(PWR_WAKEUP_FLAG1);
+        }
+    }
+
+    // ===== LIS3DH =====
     lis3dh::set_i2c_timeout(100);
     if (lis3dh::init(&LIS3DH_I2C_HANDLE) != 0) {
         error_handler();
     }
-
     // 100Hz data rate, all axes enabled
     uint8_t const ctrl_reg1 = lis3dh::ctrl_reg1_odr(lis3dh::DataRate::ODR_100_HZ) |
                               lis3dh::ctrl_reg1_low_power_mode(false) |
@@ -28,7 +41,6 @@ void init() {
     if (lis3dh::write_ctrl_reg1(&LIS3DH_I2C_HANDLE, ctrl_reg1) != 0) {
         error_handler();
     }
-
     // Enable interrupt on INT2 for z-high event of 1.104g
     uint8_t const int2_cfg = lis3dh::int2_cfg_zhie(true);
     if (lis3dh::write_int2_cfg(&LIS3DH_I2C_HANDLE, int2_cfg) != 0) {
@@ -47,6 +59,7 @@ void init() {
         error_handler();
     }
 
+    // ===== UPDATE TIMER =====
     HAL_TIM_Base_Start_IT(&htim1);
 }
 
@@ -73,6 +86,13 @@ void handle_int2_interrupt() {
     printf(">int2:0\r\n");
 }
 
+void enter_standby_mode() {
+    printf("Entering standby mode...\r\n");
+    __HAL_PWR_CLEAR_FLAG(PWR_WAKEUP_FLAG1);
+    HAL_PWR_EnableWakeUpPin(PWR_WAKEUP_PIN1_HIGH_0);
+    HAL_PWR_EnterSTANDBYMode();
+}
+
 
 extern "C" {
 void chugjug_init(void) {
@@ -85,6 +105,8 @@ void chugjug_loop(void) {
 void chugjug_gpio_exti_callback(uint16_t gpio_pin) {
     if (gpio_pin == LIS3DH_INT2_Pin) {
         handle_int2_interrupt();
+    } else if (gpio_pin == USER_BUTTON_Pin) {
+        enter_standby_mode();
     }
 }
 
