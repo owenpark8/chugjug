@@ -40,9 +40,10 @@ ENTRY(Reset_Handler)
 /* Memories definition */
 MEMORY
 {
-  RAM	(xrw)	: ORIGIN = 0x20000000,	LENGTH = 768K
-  ROM	(rx)	: ORIGIN = 0x08000000,	LENGTH = 2048K
-  SRAM4	(xrw)	: ORIGIN = 0x28000000,	LENGTH = 16K
+  RAM       (xrw)	: ORIGIN = 0x20000000,	LENGTH = 768K
+  ROM       (rx)	: ORIGIN = 0x08000000,	LENGTH = 512K
+  ROM_AUDIO (rx)	: ORIGIN = 0x08080000,  LENGTH = 1536K
+  SRAM4     (xrw)	: ORIGIN = 0x28000000,	LENGTH = 16K
 }
 /* Highest address of the user mode stack */
 _estack = ORIGIN(RAM) + LENGTH(RAM);	/* end of "RAM" Ram type memory */
@@ -53,6 +54,8 @@ _Min_Stack_Size = 0x400; /* required amount of stack */
 /* Sections */
 SECTIONS
 {
+  __flash_audio_start = ORIGIN(ROM_AUDIO);
+
   /* The startup code into "ROM" Rom type memory */
   .isr_vector :
   {
@@ -93,7 +96,7 @@ SECTIONS
     *(.ARM.extab* .gnu.linkonce.armextab.*)
     . = ALIGN(8);
   } >ROM
-  
+
   .ARM (READONLY) : /* The READONLY keyword is only supported in GCC11 and later, remove it if using GCC10 or earlier. */
   {
     . = ALIGN(8);
@@ -111,7 +114,7 @@ SECTIONS
     PROVIDE_HIDDEN (__preinit_array_end = .);
     . = ALIGN(8);
   } >ROM
-  
+
   .init_array (READONLY) : /* The READONLY keyword is only supported in GCC11 and later, remove it if using GCC10 or earlier. */
   {
     . = ALIGN(8);
@@ -121,7 +124,7 @@ SECTIONS
     PROVIDE_HIDDEN (__init_array_end = .);
     . = ALIGN(8);
   } >ROM
-  
+
   .fini_array (READONLY) : /* The READONLY keyword is only supported in GCC11 and later, remove it if using GCC10 or earlier. */
   {
     . = ALIGN(8);
@@ -136,7 +139,7 @@ SECTIONS
   _sidata = LOADADDR(.data);
 
   /* Initialized data sections into "RAM" Ram type memory */
-  .data : 
+  .data :
   {
     . = ALIGN(8);
     _sdata = .;        /* create a global symbol at data start */
@@ -144,7 +147,7 @@ SECTIONS
     *(.data*)          /* .data* sections */
 
     . = ALIGN(8);
-    
+
   } >RAM AT> ROM
 
   /* Initialized TLS data section */
