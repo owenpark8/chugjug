@@ -1,0 +1,4 @@
+(sym_lib_table
+	(version 7)
+	(lib (name "chugjug") (type "KiCad") (uri "${KIPRJMOD}/libraries/chugjug.kicad_sym") (options "") (descr ""))
+)
