@@ -67,6 +67,8 @@ void Error_Handler(void);
 #define I2S_LRCLK_GPIO_Port GPIOA
 #define I2S_DATA_Pin GPIO_PIN_10
 #define I2S_DATA_GPIO_Port GPIOA
+#define SD_MODE_Pin GPIO_PIN_11
+#define SD_MODE_GPIO_Port GPIOA
 #define STLINK_SWDIO_Pin GPIO_PIN_13
 #define STLINK_SWDIO_GPIO_Port GPIOA
 #define STLINK_SWCLK_Pin GPIO_PIN_14

@@ -19,12 +19,6 @@ extern TIM_HandleTypeDef htim1;
 #define DMA_HANDLE handle_GPDMA1_Channel0
 #define UPDATE_TIMER_HANDLE htim1
 
-struct AccelData {
-    int x_mg;
-    int y_mg;
-    int z_mg;
-};
-
 constexpr uint32_t UPDATE_TIMER_FREQUENCY_HZ = 50;
 constexpr uint32_t UPDATE_TIMER_PERIOD_MS = 1000 / UPDATE_TIMER_FREQUENCY_HZ;
 

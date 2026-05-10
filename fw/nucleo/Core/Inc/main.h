@@ -60,6 +60,8 @@ extern void chugjug_gpio_exti_callback(uint16_t gpio_pin);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define SD_MODE_Pin GPIO_PIN_3
+#define SD_MODE_GPIO_Port GPIOE
 #define USER_BUTTON_Pin GPIO_PIN_13
 #define USER_BUTTON_GPIO_Port GPIOC
 #define USER_BUTTON_EXTI_IRQn EXTI13_IRQn
