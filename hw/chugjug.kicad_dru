@@ -1,0 +1,172 @@
+(version 1)
+# Custom Design Rules (DRC) for KiCad, targeting JLCPCB 2-layer FR-4, 1oz copper.
+#
+# Source: https://jlcpcb.com/capabilities/pcb-capabilities (captured 2026-05-10)
+#
+# KiCad documentation: https://docs.kicad.org/master/id/pcbnew/pcbnew_advanced.html#custom_design_rules
+
+# -----------------------------------------------------------------------------
+# Tracks (JLCPCB: 1 oz -> 0.10/0.10 mm)
+# -----------------------------------------------------------------------------
+
+(rule "Track width, outer layer (1oz copper)"
+	(layer outer)
+	(condition "A.Type == 'track'")
+	(constraint track_width (min 0.1mm))
+)
+
+(rule "Track spacing, outer layer (1oz copper), different nets"
+	(layer outer)
+	(condition "A.Type == 'track' && B.Type == A.Type && A.Net != B.Net")
+	(constraint clearance (min 0.1mm))
+)
+
+(rule "Track spacing, same net (JLCPCB same-net track spacing)"
+	(condition "A.Type == 'track' && B.Type == A.Type && A.Net == B.Net")
+	(constraint clearance (min 0.25mm))
+)
+
+# -----------------------------------------------------------------------------
+# Silkscreen / Legend
+# JLCPCB: min line width 0.15mm, min text height 1.0mm (40 mil), 1:6 ratio
+# -----------------------------------------------------------------------------
+
+(rule "Silkscreen text"
+	(layer "?.Silkscreen")
+	(condition "A.Type == 'Text' || A.Type == 'Text Box'")
+	(constraint text_thickness (min 0.15mm))
+	(constraint text_height (min 1mm))
+)
+
+(rule "Pad to Silkscreen"
+	(layer outer)
+	(condition "A.Type == 'pad' && B.Layer == '?.Silkscreen'")
+	(constraint silk_clearance (min 0.15mm))
+)
+
+# -----------------------------------------------------------------------------
+# Board edge clearance
+# JLCPCB: Routed outline 0.2mm, V-cut 0.4mm
+# -----------------------------------------------------------------------------
+
+(rule "Edge (routed) to track clearance"
+	(condition "A.Type == 'track'")
+	(constraint edge_clearance (min 0.2mm))
+)
+
+#(rule "Edge (v-cut) to track clearance"
+#	(condition "A.Type == 'track'")
+#	(constraint edge_clearance (min 0.4mm))
+#)
+
+# -----------------------------------------------------------------------------
+# Holes
+# JLCPCB drill (2-layer): 0.15 - 6.3 mm; NPTH min 0.5 mm; castellated min 0.5 mm
+# -----------------------------------------------------------------------------
+
+(rule "Hole diameter"
+	(constraint hole_size (min 0.15mm) (max 6.3mm))
+)
+
+(rule "Hole (NPTH) diameter"
+	(layer outer)
+	(condition "!A.isPlated()")
+	(constraint hole_size (min 0.5mm))
+)
+
+(rule "Hole (castellated) diameter"
+	(layer outer)
+	(condition "A.Type == 'pad' && A.Fabrication_Property == 'Castellated pad'")
+	(constraint hole_size (min 0.5mm))
+)
+
+# TODO: plated slot min width 0.5mm — KiCad DRC has no Hole_Type/slot predicate; verify by inspection.
+# TODO: non-plated slot min width 1.0mm — same caveat.
+
+# -----------------------------------------------------------------------------
+# Annular ring
+# JLCPCB: PTH ring >=0.20mm; NPTH pad ring >=0.45mm; via min hole/dia 0.15/0.25mm
+# -----------------------------------------------------------------------------
+
+(rule "Annular ring width (via)"
+	(layer outer)
+	(condition "A.Type == 'via'")
+	(constraint annular_width (min 0.05mm))
+)
+
+(rule "Annular ring width (PTH pad)"
+	(layer outer)
+	(condition "A.Type == 'pad' && A.isPlated()")
+	(constraint annular_width (min 0.2mm))
+)
+
+(rule "Annular ring width (NPTH pad)"
+	(layer outer)
+	(condition "A.Type == 'pad' && !A.isPlated()")
+	(constraint annular_width (min 0.45mm))
+)
+
+# -----------------------------------------------------------------------------
+# Hole-to-hole spacing
+# JLCPCB: Via-to-via 0.2 mm; Pad-to-pad 0.45 mm
+# -----------------------------------------------------------------------------
+
+(rule "Clearance: via hole to via hole"
+	(layer outer)
+	(condition "A.Type == 'via' && B.Type == 'via'")
+	(constraint hole_to_hole (min 0.2mm))
+)
+
+(rule "Clearance: pad hole to pad hole"
+	(layer outer)
+	(condition "A.Type == 'pad' && B.Type == 'pad'")
+	(constraint hole_to_hole (min 0.45mm))
+)
+
+(rule "Clearance: pad hole to via hole"
+	(layer outer)
+	(condition "((A.Type == 'pad' && B.Type == 'via') || (A.Type == 'via' && B.Type == 'pad'))")
+	(constraint hole_to_hole (min 0.45mm))
+)
+
+# -----------------------------------------------------------------------------
+# Hole-to-track (hole perimeter clearance)
+# JLCPCB: Via-to-track 0.2mm; PTH-to-track 0.28mm; NPTH-to-track 0.2mm
+# -----------------------------------------------------------------------------
+
+(rule "Clearance: track to NPTH hole perimeter"
+	(condition "!A.isPlated() && B.Type == 'track' && A.Net != B.Net")
+	(constraint hole_clearance (min 0.2mm))
+)
+
+(rule "Clearance: track to PTH hole perimeter"
+	(condition "A.isPlated() && A.Type != 'via' && B.Type == 'track' && A.Net != B.Net")
+	(constraint hole_clearance (min 0.28mm))
+)
+
+(rule "Clearance: track to Via hole perimeter"
+	(condition "A.Type == 'via' && B.Type == 'track' && A.Net != B.Net")
+	(constraint hole_clearance (min 0.2mm))
+)
+
+# -----------------------------------------------------------------------------
+# Copper-to-copper clearance
+# JLCPCB: Pad-to-track 0.1mm; SMD pad-to-pad 0.15mm
+# -----------------------------------------------------------------------------
+
+(rule "Clearance: track to pad"
+	(condition "A.Type == 'pad' && B.Type == 'track' && A.Net != B.Net")
+	(constraint clearance (min 0.1mm))
+)
+
+(rule "Clearance: pad to pad (different nets)"
+	(layer outer)
+	(condition "A.Type == 'pad' && B.Type == 'pad' && A.Net != B.Net")
+	(constraint clearance (min 0.15mm))
+)
+
+(rule "Clearance: pad/via to pad/via (different nets)"
+	(layer outer)
+	(condition "A.isPlated() && B.isPlated() && A.Net != B.Net")
+	(constraint clearance (min 0.1mm))
+)

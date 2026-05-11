@@ -1,0 +1,163 @@
+(footprint "Buzzer_D20mm_H10mm_P10mm"
+	(version 20260206)
+	(generator "pcbnew")
+	(generator_version "10.0")
+	(layer "F.Cu")
+	(descr "Generic Buzzer, D14mm height 7mm with pitch 10mm")
+	(tags "buzzer")
+	(property "Datasheet" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "bfa2dc44-2a6f-44f9-bbbe-28f1aeff7344")
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Description" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "017e492d-87ab-4b67-897d-70738af3a98a")
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Reference" "REF**"
+		(at 5.16 -14.73 0)
+		(layer "F.SilkS")
+		(uuid "6270d6af-acf3-4e44-91d0-decf6d035a0c")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Value" "Buzzer_D20mm_H10mm_P10mm"
+		(at 4.69 6.5 0)
+		(layer "F.Fab")
+		(uuid "1bd4f6d7-76a5-4e26-8121-78d5e26e4a30")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(attr through_hole)
+	(duplicate_pad_numbers_are_jumpers no)
+	(fp_circle
+		(center 5 -6.5)
+		(end 15 -6.5)
+		(stroke
+			(width 0.12)
+			(type solid)
+		)
+		(fill no)
+		(layer "F.SilkS")
+		(uuid "7f8dbe72-53d0-4535-b63a-c95459036f5c")
+	)
+	(fp_circle
+		(center 5 -6.5)
+		(end 15 -6.5)
+		(stroke
+			(width 0.05)
+			(type solid)
+		)
+		(fill no)
+		(layer "F.CrtYd")
+		(uuid "c40906b7-93d5-451a-9740-0ce9faa7c0f7")
+	)
+	(fp_circle
+		(center 5 -6.5)
+		(end 6 -6.5)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(fill no)
+		(layer "F.Fab")
+		(uuid "51f284e0-2c10-481c-93e9-d3ee352044c0")
+	)
+	(fp_circle
+		(center 5 -6.5)
+		(end 15 -6.5)
+		(stroke
+			(width 0.1)
+			(type solid)
+		)
+		(fill no)
+		(layer "F.Fab")
+		(uuid "397dc495-2b93-48f1-81f9-668c36045c11")
+	)
+	(fp_text user "+"
+		(at -0.01 -2 0)
+		(layer "F.SilkS")
+		(uuid "93ac197a-9cb9-4ab0-97a1-b6b6298dc73a")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(fp_text user "+"
+		(at -0.01 -2 0)
+		(layer "F.Fab")
+		(uuid "25919a47-d478-40f1-b807-4272561223c1")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(fp_text user "${REFERENCE}"
+		(at 5.32 5 0)
+		(layer "F.Fab")
+		(uuid "abe193f9-c9d8-4d87-9497-6a5735af25a8")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(pad "1" thru_hole rect
+		(at 0 0)
+		(size 2 2)
+		(drill 1)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "5c4d1a83-52f9-4493-871c-262ccbf069df")
+	)
+	(pad "2" thru_hole circle
+		(at 10 0)
+		(size 2 2)
+		(drill 1)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(uuid "cb07c127-58e0-4bd0-8bcf-4d216c17e860")
+	)
+	(embedded_fonts no)
+	(model "${KICAD10_3DMODEL_DIR}/Buzzer_Beeper.3dshapes/Buzzer_D14mm_H7mm_P10mm.step"
+		(offset
+			(xyz 0 0 0)
+		)
+		(scale
+			(xyz 1 1 1)
+		)
+		(rotate
+			(xyz 0 0 0)
+		)
+	)
+)
