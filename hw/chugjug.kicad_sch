@@ -6006,6 +6006,10 @@
 		(uuid "ae18f855-8756-43e4-b11b-4b4f72b1c5c7")
 	)
 	(no_connect
+		(at 59.69 165.1)
+		(uuid "b53205c6-9521-45a9-af2e-9747208528ba")
+	)
+	(no_connect
 		(at 171.45 118.11)
 		(uuid "b85950c8-cf46-4c45-be4e-d675b3bb3bee")
 	)
@@ -13141,7 +13145,7 @@
 			)
 		)
 		(property "Value" "1uF"
-			(at 177.546 30.48 0)
+			(at 178.816 30.48 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -14595,9 +14599,6 @@
 		(pin "16"
 			(uuid "3a4ee2e2-1886-4bb3-8b71-01ebbd5c9133")
 		)
-		(pin "17"
-			(uuid "fd76c58d-8d14-4556-81c2-68bedad35ed7")
-		)
 		(pin "11"
 			(uuid "f0924378-2b2e-40f6-bb06-0a29a888a281")
 		)
@@ -14606,6 +14607,9 @@
 		)
 		(pin "7"
 			(uuid "9579db93-2312-466a-8761-8a925353b5e8")
+		)
+		(pin "17"
+			(uuid "619852c6-ad08-4e5b-9610-e203aaa36517")
 		)
 		(instances
 			(project "chugjug"
